@@ -16,7 +16,9 @@ const styles = {
   flex: {
     flexGrow: 1,
   },
-  version: { marginRight: 10 },
+  version: {
+    marginRight: 10,
+  },
 };
 
 @inject(EDITOR_STORE)

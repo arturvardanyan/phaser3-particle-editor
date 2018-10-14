@@ -14,6 +14,7 @@ import {
   Theme,
   WithStyles,
   withStyles,
+  Divider,
 } from '@material-ui/core';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
@@ -24,6 +25,7 @@ import { Fragment } from 'react';
 import ImportProjectFile, { ImportProjectButton } from '../ImportProjectFile';
 import { EDITOR_STORE, EMITTER_STORE, EmitterStoreProp } from '../../stores';
 import ImportBackground from '../ImportBackground';
+import ImportFrameAtlas from '../ImportFrameAtlas';
 
 enum Project {
   Create,
@@ -32,6 +34,9 @@ enum Project {
 
 const styles = (theme: Theme) =>
   createStyles({
+    margin: {
+      margin: theme.spacing.unit / 8,
+    },
     input: {
       display: 'none',
     },
@@ -67,6 +72,7 @@ class NewProjectModal extends React.Component<
       changeConfig,
       setError,
     } = this.props.editorStore!;
+    const { classes } = this.props;
 
     return (
       <Fragment>
@@ -113,7 +119,22 @@ class NewProjectModal extends React.Component<
           />
         </Grid>
         <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
+          <DialogContentText>Background</DialogContentText>
+        </Grid>
+        <Grid item xs={12}>
           <ImportBackground />
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12} className={classes.margin}>
+          <DialogContentText>Frame</DialogContentText>
+        </Grid>
+        <Grid item xs={12}>
+          <ImportFrameAtlas />
         </Grid>
       </Fragment>
     );
@@ -145,7 +166,7 @@ class NewProjectModal extends React.Component<
     const { value } = this.state;
     const { editorStore, emitterStore } = this.props;
     const { setStatus, setEditorProps, background } = editorStore!;
-    const { setEmitters } = emitterStore!;
+    const { setEmitters, setFramesProp } = emitterStore!;
     return (
       <Dialog
         open={true}
@@ -193,6 +214,7 @@ class NewProjectModal extends React.Component<
               onReadyResult={result => {
                 setEditorProps(result.editor);
                 setEmitters(result.emitters);
+                setFramesProp(result.atlas.json);
               }}
             />
           )}

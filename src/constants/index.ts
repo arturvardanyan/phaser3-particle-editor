@@ -1,7 +1,7 @@
 import blendModes from './blendModes';
 import easing from './easing';
+import { shapesJSON, shapesImage } from './shapes';
 import emitterConfig from './emitterConfig';
-import frames from './frames';
 import zoneEdgeSources, {
   deathZoneOptions,
   emitZoneOptions,
@@ -38,8 +38,9 @@ export {
   ATLAS_FILE_NAME,
   blendModes,
   easing,
+  shapesJSON,
+  shapesImage,
   emitterConfig,
-  frames,
   zoneEdgeSources,
   emitZoneEdgeShapes,
   deathZoneEdgeShapes,

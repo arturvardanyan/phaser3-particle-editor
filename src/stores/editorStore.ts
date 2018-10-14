@@ -164,11 +164,11 @@ export class EditorStore {
       this.resetBackground();
     } else {
       this.loadBackground(background);
+      this.setOpenBackgroundDialog(false);
     }
   }
 
   loadBackground(background: any) {
-    console.log('loadBackground');
     this.background.loading = true;
     const reader = new FileReader();
     reader.readAsDataURL(background);
@@ -234,10 +234,6 @@ export class EditorStore {
             (acc: any, fileData) => {
               const { value, name } = fileData;
               switch (name) {
-                case `${ATLAS_FILE_NAME}.png`: {
-                  acc.atlas.image = value;
-                  break;
-                }
                 case `${ATLAS_FILE_NAME}.json`: {
                   acc.atlas.json = JSON.parse(value);
                   break;
@@ -255,7 +251,7 @@ export class EditorStore {
               }
               return acc;
             },
-            { atlas: { image: null, json: null } },
+            { atlas: { json: null } },
           );
         } catch (err) {
           console.error(err);

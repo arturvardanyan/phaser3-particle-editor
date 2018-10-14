@@ -1,8 +1,10 @@
-import { deepCopy, getEmitterConfig, initialConfig } from '../utils';
+import { deepCopy, getEmitterConfig } from '../utils';
 import { CanvasScene } from './scenes';
+import { emitterStore } from '../stores';
 
 const createEmitter = (scene: CanvasScene, config: any, name: string) => {
-  let emitterConfig = config ? getEmitterConfig(config) : initialConfig;
+  const initialConfig = emitterStore.emitterDefaultProps;
+  const emitterConfig = getEmitterConfig(config ? config : initialConfig);
   const emitter = scene.particle.createEmitter(emitterConfig);
   emitter.name = name;
 };

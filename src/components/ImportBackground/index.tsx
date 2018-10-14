@@ -1,22 +1,21 @@
 import {
-  Button,
   Grid,
   WithStyles,
   withStyles,
   createStyles,
   Theme,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
 import React, { Fragment } from 'react';
 import { inject, observer } from 'mobx-react';
-import AttachmentIcon from '@material-ui/icons/Attachment';
 import { EDITOR_STORE, EditorStoreProp } from '../../stores';
+import FileInput from '../FileInput';
 
 const styles = (theme: Theme) =>
   createStyles({
     previewImgRoot: {
       position: 'relative',
+      marginTop: theme.spacing.unit * 2,
       '&:hover div': {
         visibility: 'visible',
       },
@@ -37,9 +36,6 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
       visibility: 'hidden',
     },
-    input: {
-      display: 'none',
-    },
     preview: {
       display: 'flex',
       justifyContent: 'center',
@@ -50,13 +46,6 @@ const styles = (theme: Theme) =>
       boxSizing: 'border-box',
       border: `1px dotted ${theme.palette.background.default}`,
     },
-    button: {
-      margin: theme.spacing.unit,
-      marginLeft: 0,
-    },
-    rightIcon: {
-      marginLeft: theme.spacing.unit,
-    },
   });
 
 @inject(EDITOR_STORE)
@@ -65,10 +54,9 @@ class ImportBackground extends React.Component<
   EditorStoreProp & WithStyles<typeof styles>
 > {
   handleChange = (event: any) => {
-    const { setBackground, setOpenBackgroundDialog } = this.props.editorStore!;
+    const { setBackground } = this.props.editorStore!;
     const background = event.target.files[0];
     if (background) {
-      setOpenBackgroundDialog(false);
       setBackground(background);
     }
   };
@@ -81,34 +69,15 @@ class ImportBackground extends React.Component<
     return (
       <Fragment>
         <Grid item xs={12}>
-          <Grid container spacing={8}>
+          <Grid container spacing={0}>
             <Grid item xs={3} />
             <Grid item xs={6}>
-              <input
+              <FileInput
                 accept="image/*"
-                className={classes.input}
-                id="button-file"
-                type="file"
-                onChange={this.handleChange}
+                onSelectFile={this.handleChange}
+                tooltipTitle="*.png | *.jpeg | *.jpg"
+                buttonTitle="Choose background ..."
               />
-              <label htmlFor="button-file">
-                <Tooltip
-                  disableFocusListener
-                  title="*.png | *.jpeg | *.jpg"
-                  placement="bottom"
-                >
-                  <Button
-                    variant="contained"
-                    color="default"
-                    className={classes.button}
-                    fullWidth
-                    component="span"
-                  >
-                    {'Choose background ...'}
-                    <AttachmentIcon className={classes.rightIcon} />
-                  </Button>
-                </Tooltip>
-              </label>
             </Grid>
             <Grid item xs={3} />
             {imageData ? (

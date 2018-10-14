@@ -13,7 +13,6 @@ import Switch from '../Switch';
 import TextField from '../TextField';
 import MultipleInput from '../MultipleInput';
 import { selectComponent } from '../Select';
-import { frames } from 'src/constants';
 import _get from 'lodash/get';
 
 @inject(EMITTER_STORE)
@@ -21,7 +20,7 @@ import _get from 'lodash/get';
 class ExpansionPanelFrame extends Component<EmitterStoreProp> {
   render() {
     const { emitterStore } = this.props;
-    const { currentEmitterConfig } = emitterStore!;
+    const { currentEmitterConfig, frames } = emitterStore!;
     return (
       <ExpansionPanel>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

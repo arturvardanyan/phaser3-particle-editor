@@ -28,7 +28,7 @@ class ImportProjectModal extends React.Component<
       setOpenImportDialog,
       setEditorProps,
     } = editorStore!;
-    const { setEmitters } = emitterStore!;
+    const { setEmitters, setFramesProp } = emitterStore!;
 
     return (
       <Dialog
@@ -62,6 +62,7 @@ class ImportProjectModal extends React.Component<
               game.destroy(true);
               setEditorProps(result.editor);
               setEmitters(result.emitters);
+              setFramesProp(result.atlas.json);
               initCanvas(result.editor.height, result.editor.width);
             }}
           />

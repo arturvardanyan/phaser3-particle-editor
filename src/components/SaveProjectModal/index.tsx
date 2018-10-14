@@ -25,7 +25,7 @@ class SaevProjectModal extends React.Component<
       setOpenSaveDialog,
       background,
     } = editorStore!;
-    const { emitters } = emitterStore!;
+    const { emitters, frame } = emitterStore!;
 
     return (
       <ExportSaveProjectModal
@@ -47,6 +47,10 @@ class SaevProjectModal extends React.Component<
               data: background.data,
               width: background.size.width,
               height: background.size.height,
+            },
+            shape: {
+              data: frame.image.data,
+              json: frame.json.data,
             },
           });
         }}

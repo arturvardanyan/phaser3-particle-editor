@@ -1,11 +1,8 @@
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import shapesIMAGE from './canvas/assets/shapes.png';
-import shapesJSON from './canvas/assets/shapes.json';
 import _isEqual from 'lodash/isEqual';
 
 import {
-  emitterConfig as emitterInitialConfig,
   zoneEdgeSources,
   ATLAS_FILE_NAME,
   ARCHIVE_EXTENSION,
@@ -101,8 +98,6 @@ const getNewEmitterID = (emitters: any) => {
   return emitterID;
 };
 
-const initialConfig = getEmitterConfig(emitterInitialConfig);
-
 const hasKey = (object: {}, key: string) => object.hasOwnProperty(key);
 
 const hasBoth = (object: {}, key1: string, key2: string) =>
@@ -134,18 +129,15 @@ const getEmitterIndex = (newEmitters: any, prevEmitters: any) => {
 };
 
 const saveProject = async (props: any) => {
-  const { canvasSize, name, emitters, backgroundData } = props;
-  const shapeData = await fetch(shapesIMAGE);
-  const shapeBuffer = await shapeData.arrayBuffer();
+  const { canvasSize, name, emitters, backgroundData, shape } = props;
   const editor = { ...canvasSize, name, backgroundData };
-
   saveZip({
     zipName: name,
     extension: ARCHIVE_EXTENSION,
     jsonFiles: [
       {
         fileName: ATLAS_FILE_NAME,
-        json: JSON.stringify(shapesJSON),
+        json: JSON.stringify(shape),
       },
       {
         fileName: 'emitters',
@@ -156,12 +148,6 @@ const saveProject = async (props: any) => {
         json: JSON.stringify(editor),
       },
     ],
-    pngFiles: [
-      {
-        fileName: ATLAS_FILE_NAME,
-        buffer: shapeBuffer,
-      },
-    ],
   });
 };
 
@@ -169,6 +155,7 @@ const exportProject = async (
   name: string,
   emitters: any[],
   exportHidden: boolean,
+  shape: any,
 ) => {
   const zoneSources: any[] = [];
   let configs: any = emitters.map(emitter =>
@@ -182,18 +169,13 @@ const exportProject = async (
       return sourceCopy;
     }),
   );
-
   if (exportHidden === false) {
     configs = configs.filter((config: any) => config.visible);
   }
-
   let configsJSON = JSON.stringify(configs);
   zoneSources.forEach((source: string) => {
     configsJSON = configsJSON.replace(`"${source}"`, `${source}`);
   });
-
-  const shapeData = await fetch(shapesIMAGE);
-  const shapeBuffer = await shapeData.arrayBuffer();
 
   saveZip({
     zipName: name,
@@ -201,7 +183,7 @@ const exportProject = async (
     jsonFiles: [
       {
         fileName: ATLAS_FILE_NAME,
-        json: JSON.stringify(shapesJSON),
+        json: JSON.stringify(shape.json),
       },
       {
         fileName: name,
@@ -211,7 +193,7 @@ const exportProject = async (
     pngFiles: [
       {
         fileName: ATLAS_FILE_NAME,
-        buffer: shapeBuffer,
+        base64: shape.data,
       },
     ],
   });
@@ -221,7 +203,7 @@ interface SaveZipProps {
   zipName: string;
   extension: string;
   jsonFiles: any[];
-  pngFiles: any[];
+  pngFiles?: any[];
 }
 
 const saveZip = (config: SaveZipProps) => {
@@ -230,9 +212,12 @@ const saveZip = (config: SaveZipProps) => {
 
   const zip = new JSZip();
 
-  pngFiles.forEach((pngFile: any) => {
-    zip.file(`${pngFile.fileName}.png`, pngFile.buffer);
-  });
+  if (pngFiles) {
+    pngFiles.forEach((pngFile: any) => {
+      const base64 = pngFile.base64.replace('data:image/png;base64,', '');
+      zip.file(`${pngFile.fileName}.png`, base64, { base64: true });
+    });
+  }
 
   jsonFiles.forEach((jsonFile: any) => {
     zip.file(`${jsonFile.fileName}.json`, jsonFile.json);
@@ -258,7 +243,6 @@ const getFileExtension = (fileName: string) => {
 
 const validateZip = (zip: any) => {
   const validKeys = [
-    `${ATLAS_FILE_NAME}.png`,
     `${ATLAS_FILE_NAME}.json`,
     'emitters.json',
     'editor.json',
@@ -293,7 +277,6 @@ export {
   getEmitterConfig,
   getNewEmitterID,
   saveZip,
-  initialConfig,
   saveProject,
   validateForm,
   getZoneShapeProps,

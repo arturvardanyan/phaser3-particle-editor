@@ -24,7 +24,7 @@ class ExportProjectModal extends React.Component<
       setOpenExportDialog,
       setExportHiddenEmitters,
     } = editorStore!;
-    const { emitters } = emitterStore!;
+    const { emitters, frame } = emitterStore!;
     const anyHiddenEmitter = emitters.some(emitter => !emitter.config.visible);
 
     return (
@@ -36,7 +36,10 @@ class ExportProjectModal extends React.Component<
         onClose={() => setOpenExportDialog(false)}
         onTrueClick={() => {
           setOpenExportDialog(false);
-          exportProject(name.value, emitters, exportHiddenEmitters);
+          exportProject(name.value, emitters, exportHiddenEmitters, {
+            data: frame.image.data,
+            json: frame.json.data,
+          });
         }}
       >
         {anyHiddenEmitter ? (
